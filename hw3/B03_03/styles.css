@@ -1,0 +1,14 @@
+body {
+  background: linear-gradient(to bottom right, #282c34, #4b0082);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+}
+
+#meme-img {
+  max-height: 500px;
+  object-fit: contain;
+  margin-top: 1rem;
+}

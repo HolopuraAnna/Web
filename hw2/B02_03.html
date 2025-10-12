@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>T02 B03</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    span.sentence {
+      cursor: pointer;
+      padding: 2px 4px;
+      margin: 2px;
+      display: inline-block;
+    }
+    span.sentence.active {
+      background-color: yellow;
+    }
+    p {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h3>Редагування тексту</h3>
+
+  <div id="text">
+    <p>
+      <span class="sentence">Перше речення.</span>
+      <span class="sentence">Друге речення.</span>
+    </p>
+    <p>
+      <span class="sentence">Ще одне речення.</span>
+    </p>
+  </div>
+
+  <br>
+
+  <input type="text" id="inputText" placeholder="Введіть текст">
+  <br><br>
+  <button id="addParagraph">Додати параграф</button>
+  <button id="clear">Зняти виділення</button>
+  <button id="replace">Змінити речення</button>
+  <button id="addBefore">Додати перед виділеним</button>
+  <button id="removeSentence">Видалити речення</button>
+  <button id="removeParagraph">Видалити параграф</button>
+
+  <script>
+    const textContainer = document.getElementById("text");
+    const input = document.getElementById("inputText");
+
+    // Логіка виділення одного речення
+    textContainer.addEventListener("click", e => {
+      if (e.target.classList.contains("sentence")) {
+        document.querySelectorAll(".sentence.active").forEach(s => s.classList.remove("active"));
+        e.target.classList.add("active");
+      }
+    });
+
+    // a) додати параграф з одним реченням
+    document.getElementById("addParagraph").addEventListener("click", () => {
+      const txt = input.value.trim() || "Нове речення.";
+      const p = document.createElement("p");
+      const span = document.createElement("span");
+      span.className = "sentence";
+      span.textContent = txt;
+      p.appendChild(span);
+      textContainer.appendChild(p);
+    });
+
+    // b,c) зняти виділення
+    document.getElementById("clear").addEventListener("click", () => {
+      document.querySelectorAll(".sentence.active").forEach(s => s.classList.remove("active"));
+    });
+
+    // d) змінити текст виділеного речення
+    document.getElementById("replace").addEventListener("click", () => {
+      const active = document.querySelector(".sentence.active");
+      if (active) {
+        const txt = input.value.trim();
+        if (txt) active.textContent = txt;
+      }
+    });
+
+    // e) додати нове речення перед виділеним
+    document.getElementById("addBefore").addEventListener("click", () => {
+      const txt = input.value.trim() || "Нове речення.";
+      const span = document.createElement("span");
+      span.className = "sentence";
+      span.textContent = txt;
+
+      const active = document.querySelector(".sentence.active");
+      if (active) {
+        active.before(span);
+      } else {
+        // Якщо не виділено — додаємо в кінець останнього параграфа
+        let lastP = textContainer.querySelector("p:last-child");
+        if (!lastP) {
+          lastP = document.createElement("p");
+          textContainer.appendChild(lastP);
+        }
+        lastP.appendChild(span);
+      }
+    });
+
+    // f) видалення виділеного речення (і параграфа, якщо порожній)
+    document.getElementById("removeSentence").addEventListener("click", () => {
+      const active = document.querySelector(".sentence.active");
+      if (active) {
+        const parentP = active.parentElement;
+        active.remove();
+        if (parentP.querySelectorAll(".sentence").length === 0) {
+          parentP.remove();
+        }
+      }
+    });
+
+    // g) видалення заданого параграфа (за виділеним реченням)
+    document.getElementById("removeParagraph").addEventListener("click", () => {
+      const active = document.querySelector(".sentence.active");
+      if (active) {
+        active.parentElement.remove();
+      }
+    });
+  </script>
+</body>
+</html>
